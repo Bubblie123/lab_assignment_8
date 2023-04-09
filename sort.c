@@ -4,17 +4,95 @@
 
 int extraMemoryAllocated;
 
+void heapify(int arr[], int i, int n) {
+    int max = i;
+    int leftChild = 2 * i + 1;
+    int rightChild = 2 * i + 2;
+
+    if(leftChild < n && arr[leftChild] > arr[max])
+        max = leftChild;
+
+    if(rightChild < n && arr[rightChild] > arr[max])
+        max = rightChild;
+
+    if(max != i) {
+        int temp = arr[i];
+        arr[i] = arr[max];
+        arr[max] = temp;
+        heapify(arr, max, n);
+    }
+}
 // implements heap sort
 // extraMemoryAllocated counts bytes of memory allocated
 void heapSort(int arr[], int n)
 {
+    for(int i = (n/2)-1; i >= 0; i--) {
+        heapify(arr, i, n);
+    }
+
+    for(int i = n-1; i >= 0; i--) {
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
+        heapify(arr,0,i);
+    }
 }
 
+void merge(int pData[], int l, int mid, int r) {
+    int leftIndex, rightIndex, middleIndex;
+    int leftSize = mid-l+1;
+    int rightSize = r-mid;
+
+    int leftArr[leftSize];
+    int rightArr[rightSize];
+
+    for(int i = 0; i < leftSize; i++) {
+        leftArr[i] = pData[l+i];
+    }
+    for(int j = 0; j < rightSize; j++) {
+        rightArr[j] = pData[mid + 1 + j];
+    }
+
+    leftIndex = 0;
+    rightIndex = 0;
+    middleIndex = l;
+
+    while(leftIndex < leftSize && rightIndex < rightSize) {
+        if(leftArr[leftIndex] <= rightArr[rightIndex]) {
+            pData[middleIndex] = leftArr[leftIndex];
+            ++leftIndex;
+        }
+        else {
+            pData[middleIndex] = rightArr[rightIndex];
+            ++rightIndex;
+        }
+        ++middleIndex;
+    }
+
+    while(leftIndex < leftSize) {
+        pData[middleIndex] = leftArr[leftIndex];
+        ++leftIndex;
+        ++middleIndex;
+    }
+
+    while(rightIndex < rightSize) {
+        pData[middleIndex] = rightArr[rightIndex];
+        ++rightIndex;
+        ++middleIndex;
+    }
+
+}
 
 // implement merge sort
 // extraMemoryAllocated counts bytes of extra memory allocated
 void mergeSort(int pData[], int l, int r)
 {
+    if(l<r) {
+        int mid=(l+(r-1))/2;
+        mergeSort(pData, l, mid);
+        mergeSort(pData, mid+1, r);
+        merge(pData, l, mid, r);
+    }
 }
 
 // parses input file to an integer array
